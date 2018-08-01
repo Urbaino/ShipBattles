@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using se.Urbaino.ShipBattles.Web.Hubs;
 
 namespace se.Urbaino.ShipBattles.Web
 {
@@ -23,6 +24,7 @@ namespace se.Urbaino.ShipBattles.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -41,6 +43,11 @@ namespace se.Urbaino.ShipBattles.Web
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
+            app.UseSignalR(o =>
+            {
+                o.MapHub<LobbyHub>("/hub");
+            });
 
             app.UseStaticFiles();
 

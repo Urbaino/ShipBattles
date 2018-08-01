@@ -1,14 +1,17 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
+import Board from '../types/domain/Board';
 
 interface GameState {
-    players: Array<string>;
+    Board: Board,
+    EnemyBoard: Board
+    Opponent: string;
 }
 
 export class Game extends React.Component<RouteComponentProps<{}>, GameState> {
     constructor() {
         super();
-        this.state = { players: [] };
+        // this.state = { Board: {}, EnemyBoard: {}, Opponent: '' };
     }
 
     public render() {
@@ -17,7 +20,8 @@ export class Game extends React.Component<RouteComponentProps<{}>, GameState> {
 
             <p>This is a simple example of a React component.</p>
 
-            <p>Current player count: <strong>{ this.state.players.length }</strong></p>
+            <p>Your board: <strong>{this.state.Board}</strong></p>
+            <p>Enemy board: <strong>{this.state.EnemyBoard}</strong></p>
 
         </div>;
     }

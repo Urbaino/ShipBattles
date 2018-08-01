@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
+import Player from '../types/Player';
 
 interface LobbyState {
-    players: Array<string>;
+    players: Array<Player>;
 }
 
 export class Lobby extends React.Component<RouteComponentProps<{}>, LobbyState> {
