@@ -1,6 +1,6 @@
 using System;
 
-namespace se.Urbaino.ShipBattles.Domain
+namespace se.Urbaino.ShipBattles.Domain.GameItems
 {
     public class Shot
     {
