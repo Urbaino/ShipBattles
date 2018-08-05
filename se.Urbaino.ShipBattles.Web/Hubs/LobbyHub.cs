@@ -35,10 +35,14 @@ namespace se.Urbaino.ShipBattles.Web.Hubs
             await Clients.Others.SendAsync("NewPlayer", player);
 
             var games = GameRepository.GetListOfGames(player.Id)
-                .Select(g => new GameDTO { 
-                    Id = g.Id, 
-                    OpponentName = (player.Id == g.PlayerA ? g.PlayerB : g.PlayerA) 
-                }); 
+                .Select(g => new GameDTO
+                {
+                    Id = g.Id,
+                    OpponentName = (player.Id == g.PlayerA ? g.PlayerB : g.PlayerA),
+                    ResultIsVictory = (g.State == GameState.PlayerAWin || g.State == GameState.PlayerBWin) ?
+                        (player.Id == g.PlayerA ? g.State == GameState.PlayerAWin : g.State == GameState.PlayerBWin) :
+                        (bool?)null
+                });
             await Clients.Caller.SendAsync("Initialize", player, ActiveUsers, games);
 
             ActiveUsers.Add(player);

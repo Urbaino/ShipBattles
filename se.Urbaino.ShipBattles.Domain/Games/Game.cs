@@ -5,7 +5,7 @@ using se.Urbaino.ShipBattles.Domain.GameItems;
 
 namespace se.Urbaino.ShipBattles.Domain.Games
 {
-    public class Game : IGame // NOTE: Make generic for rule set and determine state from Boards (no need to change state)?
+    public class Game // NOTE: Make generic for rule set and determine state from Boards (no need to change state)?
     {
         public string Id { get; private set; }
         public Board BoardA {get; private set;}
@@ -42,25 +42,25 @@ namespace se.Urbaino.ShipBattles.Domain.Games
 
         public static Game NewGame(string playerA, string playerB) => new Game(playerA, playerB);
 
-        void IGame.PlayerAPlaceShip(Ship ship)
+        public void PlayerAPlaceShip(Ship ship)
         {
             if (!IsPlayerAsTurn()) throw new ShipBattlesOutOfTurnException();
             PlaceShip(ship);
         }
 
-        void IGame.PlayerATakeShot(Shot shot)
+        public void PlayerATakeShot(Shot shot)
         {
             if (!IsPlayerAsTurn()) throw new ShipBattlesOutOfTurnException();
             TakeShot(shot);
         }
 
-        void IGame.PlayerBPlaceShip(Ship ship)
+        public void PlayerBPlaceShip(Ship ship)
         {
             if (IsPlayerAsTurn()) throw new ShipBattlesOutOfTurnException();
             PlaceShip(ship);
         }
 
-        void IGame.PlayerBTakeShot(Shot shot)
+        public void PlayerBTakeShot(Shot shot)
         {
             if (IsPlayerAsTurn()) throw new ShipBattlesOutOfTurnException();
             TakeShot(shot);

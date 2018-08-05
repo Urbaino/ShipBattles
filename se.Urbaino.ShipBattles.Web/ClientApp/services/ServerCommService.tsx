@@ -1,1 +1,0 @@
-import * as SignalR from '@aspnet/signalR';
