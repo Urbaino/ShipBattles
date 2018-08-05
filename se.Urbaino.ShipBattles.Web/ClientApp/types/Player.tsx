@@ -1,4 +1,4 @@
 export default interface Player {
-    Id : number,
-    Name : string
+    id : string,
+    name : string
 }

@@ -1,12 +1,12 @@
-﻿using se.Urbaino.ShipBattles.Domain.GameItems;
+﻿using System;
+using se.Urbaino.ShipBattles.Domain.GameItems;
 
 namespace se.Urbaino.ShipBattles.Domain.Games
 {
     public interface IGame
     {
+        string Id { get; }
         GameState State { get; }
-
-        IGame NewGame(string playerA, string playerB);
 
         void PlayerAPlaceShip(Ship ship);
         void PlayerBPlaceShip(Ship ship);

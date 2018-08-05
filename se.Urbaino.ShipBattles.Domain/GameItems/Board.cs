@@ -10,8 +10,8 @@ namespace se.Urbaino.ShipBattles.Domain.GameItems
         private Dictionary<Coordinate, Ship> _ships = new Dictionary<Coordinate, Ship>();
         private Dictionary<Coordinate, Shot> _shots = new Dictionary<Coordinate, Shot>();
 
-        public int Height { get; }
-        public int Width { get; }
+        public int Height { get; private set; }
+        public int Width { get; private set; }
 
         public Board(int height, int width)
         {

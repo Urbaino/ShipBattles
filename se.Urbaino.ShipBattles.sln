@@ -1,4 +1,4 @@
-
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
@@ -8,6 +8,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "se.Urbaino.ShipBattles.Domain", "se.Urbaino.ShipBattles.Domain\se.Urbaino.ShipBattles.Domain.csproj", "{71594310-D54F-4587-83D4-8FC8FB96D3B3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "se.Urbaino.ShipBattles.Tests", "se.Urbaino.ShipBattles.Tests\se.Urbaino.ShipBattles.Tests.csproj", "{CDA79561-A539-400B-97E8-B8D69DC0EF3F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "se.Urbaino.ShipBattles.Data", "se.Urbaino.ShipBattles.Data\se.Urbaino.ShipBattles.Data.csproj", "{08179B66-EBA3-473E-AFDB-8B5C0B46441B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -58,5 +60,17 @@ Global
 		{CDA79561-A539-400B-97E8-B8D69DC0EF3F}.Release|x64.Build.0 = Release|x64
 		{CDA79561-A539-400B-97E8-B8D69DC0EF3F}.Release|x86.ActiveCfg = Release|x86
 		{CDA79561-A539-400B-97E8-B8D69DC0EF3F}.Release|x86.Build.0 = Release|x86
+		{08179B66-EBA3-473E-AFDB-8B5C0B46441B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08179B66-EBA3-473E-AFDB-8B5C0B46441B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08179B66-EBA3-473E-AFDB-8B5C0B46441B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{08179B66-EBA3-473E-AFDB-8B5C0B46441B}.Debug|x64.Build.0 = Debug|Any CPU
+		{08179B66-EBA3-473E-AFDB-8B5C0B46441B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{08179B66-EBA3-473E-AFDB-8B5C0B46441B}.Debug|x86.Build.0 = Debug|Any CPU
+		{08179B66-EBA3-473E-AFDB-8B5C0B46441B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08179B66-EBA3-473E-AFDB-8B5C0B46441B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08179B66-EBA3-473E-AFDB-8B5C0B46441B}.Release|x64.ActiveCfg = Release|Any CPU
+		{08179B66-EBA3-473E-AFDB-8B5C0B46441B}.Release|x64.Build.0 = Release|Any CPU
+		{08179B66-EBA3-473E-AFDB-8B5C0B46441B}.Release|x86.ActiveCfg = Release|Any CPU
+		{08179B66-EBA3-473E-AFDB-8B5C0B46441B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

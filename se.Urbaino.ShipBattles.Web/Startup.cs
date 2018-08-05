@@ -2,11 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.Webpack;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using se.Urbaino.ShipBattles.Data;
+using se.Urbaino.ShipBattles.Data.Repositories;
+using se.Urbaino.ShipBattles.Domain.Repositories;
 using se.Urbaino.ShipBattles.Web.Hubs;
 
 namespace se.Urbaino.ShipBattles.Web
@@ -25,6 +30,16 @@ namespace se.Urbaino.ShipBattles.Web
         {
             services.AddMvc();
             services.AddSignalR();
+            services.AddAuthentication(o => {
+                o.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                o.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            })
+            .AddCookie(o => {});
+            
+            services.AddDbContext<ShipBattlesContext>(options =>
+                options.UseSqlite(Configuration.GetConnectionString("DefaultConnection"))
+            );
+            services.AddScoped<IGameRepository, GameRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,9 +59,10 @@ namespace se.Urbaino.ShipBattles.Web
                 app.UseExceptionHandler("/Home/Error");
             }
 
+            app.UseAuthentication();
             app.UseSignalR(o =>
             {
-                o.MapHub<LobbyHub>("/hub");
+                o.MapHub<LobbyHub>("/lobbyHub");
             });
 
             app.UseStaticFiles();

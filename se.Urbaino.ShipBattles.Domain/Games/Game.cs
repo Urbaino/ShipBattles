@@ -7,16 +7,19 @@ namespace se.Urbaino.ShipBattles.Domain.Games
 {
     public class Game : IGame // NOTE: Make generic for rule set and determine state from Boards (no need to change state)?
     {
-        private Board BoardA;
-        private Board BoardB;
+        public string Id { get; private set; }
+        public Board BoardA {get; private set;}
+        public Board BoardB {get; private set;}
 
-        private string PlayerA;
-        private string PlayerB;
+        public string PlayerA {get; private set;}
+        public string PlayerB {get; private set;}
 
         public GameState State { get; private set; }
 
         private Game(string playerA, string playerB)
         {
+            Id = Guid.NewGuid().ToString();
+
             PlayerA = playerA;
             PlayerB = playerB;
 
@@ -24,7 +27,20 @@ namespace se.Urbaino.ShipBattles.Domain.Games
             BoardB = new Board(10, 10);
         }
 
-        IGame IGame.NewGame(string playerA, string playerB) => new Game(playerA, playerB);
+        /// <summary>
+        /// Do not use to create a new game, use static method <see cref="NewGame"> instead.
+        /// </summary>
+        public Game(string id, Board boardA, Board boardB, string playerA, string playerB, GameState state)
+        {
+            Id = id;
+            BoardA = boardA;
+            BoardB = boardB;
+            PlayerA = playerA;
+            PlayerB = playerB;
+            State = state;
+        }
+
+        public static Game NewGame(string playerA, string playerB) => new Game(playerA, playerB);
 
         void IGame.PlayerAPlaceShip(Ship ship)
         {
