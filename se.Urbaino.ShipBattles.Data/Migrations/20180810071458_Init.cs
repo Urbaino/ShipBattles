@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace se.Urbaino.ShipBattles.Data.Migrations
 {
@@ -11,13 +12,19 @@ namespace se.Urbaino.ShipBattles.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
-                    BoardA_Height = table.Column<int>(nullable: false),
-                    BoardA_Width = table.Column<int>(nullable: false),
-                    BoardB_Height = table.Column<int>(nullable: false),
-                    BoardB_Width = table.Column<int>(nullable: false),
+                    Timestamp = table.Column<DateTime>(nullable: false),
                     PlayerA = table.Column<string>(nullable: true),
                     PlayerB = table.Column<string>(nullable: true),
-                    State = table.Column<int>(nullable: false)
+                    PlayerAState = table.Column<int>(nullable: false),
+                    PlayerBState = table.Column<int>(nullable: false),
+                    JSONShipsA = table.Column<string>(nullable: true),
+                    JSONShotsA = table.Column<string>(nullable: true),
+                    HeightA = table.Column<int>(nullable: false),
+                    WidthA = table.Column<int>(nullable: false),
+                    JSONShipsB = table.Column<string>(nullable: true),
+                    JSONShotsB = table.Column<string>(nullable: true),
+                    HeightB = table.Column<int>(nullable: false),
+                    WidthB = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {

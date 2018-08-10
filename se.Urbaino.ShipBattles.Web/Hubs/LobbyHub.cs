@@ -8,19 +8,20 @@ using se.Urbaino.ShipBattles.Domain.Exceptions;
 using System.Collections.Generic;
 using se.Urbaino.ShipBattles.Web.Hubs.Lobby;
 using System.Linq;
+using se.Urbaino.ShipBattles.Domain.Services;
 
 namespace se.Urbaino.ShipBattles.Web.Hubs
 {
     public class LobbyHub : Hub
     {
-        private readonly IGameRepository GameRepository;
+        private readonly IGameManagerService GameManager;
         private static List<PlayerDTO> ActiveUsers = new List<PlayerDTO>();
 
         private static PlayerDTO GetCurrentPlayer(HubCallerContext context) => new PlayerDTO { Id = context.UserIdentifier, Name = context.UserIdentifier };
 
-        public LobbyHub(IGameRepository gameRepository)
+        public LobbyHub(IGameManagerService gameManager)
         {
-            GameRepository = gameRepository;
+            GameManager = gameManager;
         }
 
         public async Task SendMessage(string message)
@@ -34,15 +35,15 @@ namespace se.Urbaino.ShipBattles.Web.Hubs
             var player = GetCurrentPlayer(Context);
             await Clients.Others.SendAsync("NewPlayer", player);
 
-            var games = GameRepository.GetListOfGames(player.Id)
-                .Select(g => new GameDTO
-                {
-                    Id = g.Id,
-                    OpponentName = (player.Id == g.PlayerA ? g.PlayerB : g.PlayerA),
-                    ResultIsVictory = (g.State == GameState.PlayerAWin || g.State == GameState.PlayerBWin) ?
-                        (player.Id == g.PlayerA ? g.State == GameState.PlayerAWin : g.State == GameState.PlayerBWin) :
-                        (bool?)null
-                });
+            var dbGames = GameManager.GetGames(player.Id);
+            var games = dbGames.Select(g => new GameDTO
+            {
+                Id = g.Id,
+                OpponentName = (player.Id == g.PlayerA ? g.PlayerB : g.PlayerA),
+                ResultIsVictory = (g.PlayerAState == GameState.Win || g.PlayerBState == GameState.Win) ?
+                     (player.Id == g.PlayerA ? g.PlayerAState == GameState.Win : g.PlayerBState == GameState.Win) :
+                     (bool?)null
+            });
             await Clients.Caller.SendAsync("Initialize", player, ActiveUsers, games);
 
             ActiveUsers.Add(player);
@@ -65,8 +66,7 @@ namespace se.Urbaino.ShipBattles.Web.Hubs
         public async Task AcceptChallenge(string state)
         {
             var challenge = Challenge.DecryptAndVerify(state, Context.UserIdentifier);
-            var game = Game.NewGame(challenge.PlayerA, challenge.PlayerB);
-            await GameRepository.UpdateAsync(game);
+            var game = GameManager.NewGame(challenge.PlayerA, challenge.PlayerB);
 
             await Clients.Caller.SendAsync("GameOn", game.Id);
             await Clients.Group(challenge.PlayerA).SendAsync("GameOn", game.Id);

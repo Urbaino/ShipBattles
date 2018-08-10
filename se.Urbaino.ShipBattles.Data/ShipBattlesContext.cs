@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using se.Urbaino.ShipBattles.Domain.Games;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Newtonsoft.Json;
+using se.Urbaino.ShipBattles.Data.DBO;
 
 namespace se.Urbaino.ShipBattles.Data
 {
@@ -8,16 +11,33 @@ namespace se.Urbaino.ShipBattles.Data
     {
         public ShipBattlesContext(DbContextOptions<ShipBattlesContext> options) : base(options) { }
 
-        public DbSet<Game> Games { get; private set; }
+        internal DbSet<GameDBO> Games { get; private set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<Game>(e =>
+            // TODO: Detta pajjar ChangeTrackern
+            ValueConverter<T, string> JsonValueConverter<T>()
             {
-                e.HasKey(g => g.Id);
-                e.OwnsOne(g => g.BoardA);
-                e.OwnsOne(g => g.BoardB);
-            });
+                return new ValueConverter<T, string>(
+                    b => JsonConvert.SerializeObject(b),
+                    s => JsonConvert.DeserializeObject<T>(s)
+                );
+            }
+
+            // builder.Entity<GameDBO>(e =>
+            // {
+            //     e.Property(g => g.ShipsA).HasConversion(JsonValueConverter<List<ShipDBO>>());
+            //     e.Property(g => g.ShipsB).HasConversion(JsonValueConverter<List<ShipDBO>>());
+            // });
+
+            // builder.Entity<ShipDBO>(e =>
+            // {
+            // });
+
+            // builder.Entity<ShotDBO>(e =>
+            // {
+            // });
         }
+
     }
 }

@@ -8,41 +8,46 @@ using se.Urbaino.ShipBattles.Domain.Exceptions;
 using System.Collections.Generic;
 using se.Urbaino.ShipBattles.Web.Hubs.Lobby;
 using se.Urbaino.ShipBattles.Domain.GameItems;
+using se.Urbaino.ShipBattles.Domain.Services;
 
 namespace se.Urbaino.ShipBattles.Web.Hubs
 {
     public class GameHub : Hub
     {
-        private readonly IGameRepository GameRepository;
+        private readonly IGameManagerService GameManager;
 
-        private static PlayerDTO GetCurrentPlayer(HubCallerContext context) => new PlayerDTO { Id = context.UserIdentifier, Name = context.UserIdentifier };
+        private PlayerDTO GetCurrentPlayer => new PlayerDTO { Id = Context.UserIdentifier, Name = Context.UserIdentifier };
 
-        // public LobbyHub(IGameRepository gameRepository)
-        // {
-        //     GameRepository = gameRepository;
-        // }
-
-        public async Task SendMessage(string message)
+        public GameHub(IGameManagerService gameManager)
         {
-            await Clients.All.SendAsync("RecieveMessage", message);
+            GameManager = gameManager;
         }
 
-        public override async Task OnConnectedAsync()
+        public async Task GetGameInfo(string gameId)
         {
-        }
+            await Groups.AddToGroupAsync(gameId, Context.UserIdentifier);
+            var game = GameManager.GetGame(gameId, GetCurrentPlayer.Id);
 
-        public override async Task OnDisconnectedAsync(System.Exception exception)
-        {
+            // Testing
+            game = GameManager.PlaceShip(game.Id, GetCurrentPlayer.Id, new Ship(new Coordinate(1, 0), 4, Direction.East));
+
+            await Clients.Caller.SendAsync("Initialize", game, GetCurrentPlayer);
         }
 
         public async Task PlaceShip(string gameId, Ship ship)
         {
-            var currentGame = GameRepository.GetGame(gameId, GetCurrentPlayer(Context).Id);
+            // TODO: Exception handling
+            var game = GameManager.PlaceShip(gameId, GetCurrentPlayer.Id, ship);
+
+            await Clients.Group(gameId).SendAsync("GameUpdate", game);
         }
 
         public async Task Fire(string gameId, Shot shot)
         {
+            // TODO: Exception handling
+            var game = GameManager.Fire(gameId, GetCurrentPlayer.Id, shot);
 
+            await Clients.Group(gameId).SendAsync("GameUpdate", game);
         }
 
     }

@@ -4,8 +4,8 @@ namespace se.Urbaino.ShipBattles.Domain.GameItems
 {
     public class Coordinate
     {
-        public int X { get; }
-        public int Y { get; }
+        public int X { get; private set; }
+        public int Y { get; private set; }
 
         public Coordinate(int x, int y)
         {
@@ -29,20 +29,21 @@ namespace se.Urbaino.ShipBattles.Domain.GameItems
             }
         }
 
-        public override string ToString()
-        {
-            // TODO: Json-blob
-            return string.Empty;
-        }
-
         public override int GetHashCode()
         {
-            throw new NotImplementedException();
+            return $"{X}+{Y}".GetHashCode();
         }
 
         public override bool Equals(object coord)
         {
-            throw new NotImplementedException();
+            if (coord == null || GetType() != coord.GetType())
+            {
+                return false;
+            }
+
+            var other = (Coordinate)coord;
+            return X == other.X && Y == other.Y;
         }
+
     }
 }

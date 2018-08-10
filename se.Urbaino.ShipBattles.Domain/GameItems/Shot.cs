@@ -11,9 +11,5 @@ namespace se.Urbaino.ShipBattles.Domain.GameItems
             Coordinates = coordinates;
         }
 
-        public override string ToString(){
-            // TODO: Json-blob
-            return string.Empty;
-        }
     }
 }

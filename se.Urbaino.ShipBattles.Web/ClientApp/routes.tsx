@@ -4,9 +4,11 @@ import { Layout } from './components/Layout';
 import { Home } from './components/Home';
 import { History } from './components/History';
 import { Lobby } from './components/Lobby';
+import { Play } from './components/Play';
 
 export const routes = <Layout>
     <Route exact path='/' component={Home} />
     <Route path='/lobby' component={Lobby} />
+    <Route path='/play' component={Play} />
     <Route path='/history' component={History} />
 </Layout>;

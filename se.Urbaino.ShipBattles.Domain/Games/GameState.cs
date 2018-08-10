@@ -2,20 +2,17 @@ namespace se.Urbaino.ShipBattles.Domain.Games
 {
     public enum GameState
     {
-        PlayerAPlaceShip4,
-        PlayerAPlaceShip3,
-        PlayerAPlaceShip2,
-        PlayerAPlaceShip1,
+        PlaceShip4,
+        PlaceShip3,
+        PlaceShip2,
+        PlaceShip1,
+        ReadyToPlay,
 
-        PlayerBPlaceShip4,
-        PlayerBPlaceShip3,
-        PlayerBPlaceShip2,
-        PlayerBPlaceShip1,
+        NotYourTurn,
+        Fire,
 
-        PlayerAFire,
-        PlayerBFire,
-
-        PlayerAWin,
-        PlayerBWin
+        Win,
+        Lose
     }
+
 }

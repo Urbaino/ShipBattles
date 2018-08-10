@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using se.Urbaino.ShipBattles.Data;
 using se.Urbaino.ShipBattles.Data.Repositories;
 using se.Urbaino.ShipBattles.Domain.Repositories;
+using se.Urbaino.ShipBattles.Domain.Services;
 using se.Urbaino.ShipBattles.Web.Hubs;
 
 namespace se.Urbaino.ShipBattles.Web
@@ -40,6 +41,8 @@ namespace se.Urbaino.ShipBattles.Web
                 options.UseSqlite(Configuration.GetConnectionString("DefaultConnection"))
             );
             services.AddScoped<IGameRepository, GameRepository>();
+            
+            services.AddScoped<IGameManagerService, GameManagerService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -63,6 +66,7 @@ namespace se.Urbaino.ShipBattles.Web
             app.UseSignalR(o =>
             {
                 o.MapHub<LobbyHub>("/lobbyHub");
+                o.MapHub<GameHub>("/gameHub");
             });
 
             app.UseStaticFiles();

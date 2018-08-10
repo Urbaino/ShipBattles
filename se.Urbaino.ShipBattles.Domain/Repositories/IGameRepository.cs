@@ -6,7 +6,7 @@ namespace se.Urbaino.ShipBattles.Domain.Repositories
 {
     public interface IGameRepository
     {
-        Task UpdateAsync(Game game);
+        void Update(Game game);
         IEnumerable<Game> GetListOfGames(string id);
         Game GetGame(string gameId, string playerId);
     }

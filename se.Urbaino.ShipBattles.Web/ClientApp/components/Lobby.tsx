@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 import Player from '../types/Player';
-import Game from '../types/Game';
+import GameSummary from '../types/GameSummary';
 import { HubConnection, HubConnectionBuilder, LogLevel } from '@aspnet/signalR';
 import Challenge from '../types/Challenge';
 
@@ -9,7 +9,7 @@ interface LobbyState {
     Hub: HubConnection,
     Me: Player,
     Players: Array<Player>,
-    Games: Array<Game>,
+    Games: Array<GameSummary>,
     Challenge?: Challenge
 }
 
@@ -23,7 +23,7 @@ export class Lobby extends React.Component<RouteComponentProps<{}>, LobbyState> 
             Games: []
         };
 
-        this.state.Hub.on('Initialize', (me: Player, players: Array<Player>, games: Array<Game>) => {
+        this.state.Hub.on('Initialize', (me: Player, players: Array<Player>, games: Array<GameSummary>) => {
             this.setState(() => { return { Me: me, Players: players, Games: games } });
         });
 
@@ -83,7 +83,7 @@ export class Lobby extends React.Component<RouteComponentProps<{}>, LobbyState> 
     }
 
     redirectToGame = (gameId: string) => {
-        window.location.href = `game/${gameId}`;        
+        window.location.href = `play/${gameId}`;        
     }
 
     public render() {

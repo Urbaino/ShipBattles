@@ -5,9 +5,9 @@ namespace se.Urbaino.ShipBattles.Domain.GameItems
 {
     public class Ship
     {
-        public Coordinate Origin { get; }
-        public int Length { get; }
-        public Direction Heading { get; }
+        public Coordinate Origin { get; private set; }
+        public int Length { get; private set; }
+        public Direction Heading { get; private set; }
 
         public Ship(Coordinate origin, int length, Direction heading)
         {
@@ -28,10 +28,5 @@ namespace se.Urbaino.ShipBattles.Domain.GameItems
             }
         }
 
-        public override string ToString()
-        {
-            // TODO: Json-blob
-            return string.Empty;
-        }
     }
 }

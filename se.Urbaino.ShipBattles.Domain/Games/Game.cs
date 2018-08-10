@@ -8,171 +8,146 @@ namespace se.Urbaino.ShipBattles.Domain.Games
     public class Game // NOTE: Make generic for rule set and determine state from Boards (no need to change state)?
     {
         public string Id { get; private set; }
-        public Board BoardA {get; private set;}
-        public Board BoardB {get; private set;}
+        public DateTime Timestamp { get; internal set; }
 
-        public string PlayerA {get; private set;}
-        public string PlayerB {get; private set;}
+        public Board BoardA { get; private set; }
+        public Board BoardB { get; private set; }
 
-        public GameState State { get; private set; }
+        public string PlayerA { get; private set; }
+        public string PlayerB { get; private set; }
+
+        public GameState PlayerAState { get; private set; }
+        public GameState PlayerBState { get; private set; }
 
         private Game(string playerA, string playerB)
         {
             Id = Guid.NewGuid().ToString();
+            Timestamp = DateTime.Now;
 
             PlayerA = playerA;
             PlayerB = playerB;
 
             BoardA = new Board(10, 10);
             BoardB = new Board(10, 10);
+
+            PlayerAState = GameState.PlaceShip4;
+            PlayerBState = GameState.PlaceShip4;
         }
 
         /// <summary>
         /// Do not use to create a new game, use static method <see cref="NewGame"> instead.
         /// </summary>
-        public Game(string id, Board boardA, Board boardB, string playerA, string playerB, GameState state)
+        public Game(string id, DateTime timestamp, Board boardA, Board boardB, string playerA, string playerB, GameState playerAState, GameState playerBState)
         {
             Id = id;
+            Timestamp = timestamp;
             BoardA = boardA;
             BoardB = boardB;
             PlayerA = playerA;
             PlayerB = playerB;
-            State = state;
+            PlayerAState = playerAState;
+            PlayerBState = playerBState;
         }
 
         public static Game NewGame(string playerA, string playerB) => new Game(playerA, playerB);
 
         public void PlayerAPlaceShip(Ship ship)
         {
-            if (!IsPlayerAsTurn()) throw new ShipBattlesOutOfTurnException();
-            PlaceShip(ship);
+            PlayerAState = PlaceShip(ship, PlayerAState, BoardA);
+            IsGameReadyToStart();
         }
 
         public void PlayerATakeShot(Shot shot)
         {
-            if (!IsPlayerAsTurn()) throw new ShipBattlesOutOfTurnException();
-            TakeShot(shot);
+            PlayerAState = TakeShot(shot, PlayerAState, BoardB);
+            PlayerBState = PlayerAState == GameState.Win ? GameState.Lose : GameState.Fire;
         }
 
         public void PlayerBPlaceShip(Ship ship)
         {
-            if (IsPlayerAsTurn()) throw new ShipBattlesOutOfTurnException();
-            PlaceShip(ship);
+            PlayerBState = PlaceShip(ship, PlayerBState, BoardB);
+            IsGameReadyToStart();
         }
 
         public void PlayerBTakeShot(Shot shot)
         {
-            if (IsPlayerAsTurn()) throw new ShipBattlesOutOfTurnException();
-            TakeShot(shot);
+            PlayerBState = TakeShot(shot, PlayerBState, BoardA);
+            PlayerAState = PlayerBState == GameState.Win ? GameState.Lose : GameState.Fire;
         }
 
-        private void PlaceShip(Ship ship)
+        private static GameState PlaceShip(Ship ship, GameState state, Board board)
         {
-            void PlaceShipHelper(int length, Board board)
+            void PlaceShipHelper(int length)
             {
                 if (ship.Length != length)
                     throw new ShipBattlesIllegalMoveException($"Must place ship of length {length}");
                 board.PlaceShip(ship);
             }
 
-            switch (State)
+            switch (state)
             {
-                case GameState.PlayerAPlaceShip1:
-                    PlaceShipHelper(1, BoardA);
-                    State = GameState.PlayerBPlaceShip1;
-                    break;
-                case GameState.PlayerAPlaceShip2:
-                    PlaceShipHelper(2, BoardA);
-                    State = GameState.PlayerBPlaceShip2;
-                    break;
-                case GameState.PlayerAPlaceShip3:
-                    PlaceShipHelper(3, BoardA);
-                    State = GameState.PlayerBPlaceShip3;
-                    break;
-                case GameState.PlayerAPlaceShip4:
-                    PlaceShipHelper(4, BoardA);
-                    State = GameState.PlayerBPlaceShip4;
-                    break;
+                case GameState.PlaceShip4:
+                    PlaceShipHelper(4);
+                    return GameState.PlaceShip3;
+                case GameState.PlaceShip3:
+                    PlaceShipHelper(3);
+                    return GameState.PlaceShip2;
+                case GameState.PlaceShip2:
+                    PlaceShipHelper(2);
+                    return GameState.PlaceShip1;
+                case GameState.PlaceShip1:
+                    PlaceShipHelper(1);
+                    return GameState.ReadyToPlay;
 
-                case GameState.PlayerBPlaceShip1:
-                    PlaceShipHelper(1, BoardB);
-                    State = GameState.PlayerAFire;
-                    break;
-                case GameState.PlayerBPlaceShip2:
-                    PlaceShipHelper(2, BoardB);
-                    State = GameState.PlayerAPlaceShip1;
-                    break;
-                case GameState.PlayerBPlaceShip3:
-                    PlaceShipHelper(3, BoardB);
-                    State = GameState.PlayerAPlaceShip2;
-                    break;
-                case GameState.PlayerBPlaceShip4:
-                    PlaceShipHelper(4, BoardB);
-                    State = GameState.PlayerAPlaceShip3;
-                    break;
-
-                case GameState.PlayerAFire:
-                case GameState.PlayerBFire:
+                case GameState.Fire:
                     throw new ShipBattlesIllegalMoveException("Cannot fire at this point");
 
-                default:
-                    throw new System.NotImplementedException();
-            }
-        }
+                case GameState.NotYourTurn:
+                    throw new ShipBattlesOutOfTurnException();
 
-        private void TakeShot(Shot shot)
-        {
-            switch (State)
-            {
-                case GameState.PlayerAPlaceShip1:
-                case GameState.PlayerAPlaceShip2:
-                case GameState.PlayerAPlaceShip3:
-                case GameState.PlayerAPlaceShip4:
-                case GameState.PlayerBPlaceShip1:
-                case GameState.PlayerBPlaceShip2:
-                case GameState.PlayerBPlaceShip3:
-                case GameState.PlayerBPlaceShip4:
-                    throw new ShipBattlesIllegalMoveException("Cannot place ship at this point");
-
-                case GameState.PlayerAFire:
-                    BoardB.Fire(shot);
-                    State = BoardB.HasGameEnded() ? GameState.PlayerAWin : GameState.PlayerBFire;
-                    break;
-                case GameState.PlayerBFire:
-                    BoardA.Fire(shot);
-                    State = BoardA.HasGameEnded() ? GameState.PlayerBWin : GameState.PlayerAFire;
-                    break;
-
-                default:
-                    throw new System.NotImplementedException();
-            }
-        }
-
-        private bool IsPlayerAsTurn()
-        {
-            switch (State)
-            {
-                case GameState.PlayerAFire:
-                case GameState.PlayerAPlaceShip1:
-                case GameState.PlayerAPlaceShip2:
-                case GameState.PlayerAPlaceShip3:
-                case GameState.PlayerAPlaceShip4:
-                    return true;
-
-                case GameState.PlayerBFire:
-                case GameState.PlayerBPlaceShip1:
-                case GameState.PlayerBPlaceShip2:
-                case GameState.PlayerBPlaceShip3:
-                case GameState.PlayerBPlaceShip4:
-                    return false;
-
-                case GameState.PlayerAWin:
-                case GameState.PlayerBWin:
+                case GameState.Win:
+                case GameState.Lose:
                     throw new ShipBattlesGameOverException();
 
                 default:
                     throw new System.NotImplementedException();
             }
         }
+
+        private static GameState TakeShot(Shot shot, GameState state, Board board)
+        {
+            switch (state)
+            {
+                case GameState.Fire:
+                    board.Fire(shot);
+                    return board.AreAllShipsSunk() ? GameState.Win : GameState.NotYourTurn;
+
+                case GameState.PlaceShip1:
+                case GameState.PlaceShip2:
+                case GameState.PlaceShip3:
+                case GameState.PlaceShip4:
+                    throw new ShipBattlesIllegalMoveException("Cannot place ship at this point");
+
+                case GameState.NotYourTurn:
+                    throw new ShipBattlesOutOfTurnException();
+
+                case GameState.Win:
+                case GameState.Lose:
+                    throw new ShipBattlesGameOverException();
+
+                default:
+                    throw new System.NotImplementedException();
+            }
+        }
+
+        private void IsGameReadyToStart()
+        {
+            if (PlayerAState == GameState.ReadyToPlay && PlayerBState == GameState.ReadyToPlay)
+            {
+                PlayerAState = GameState.NotYourTurn;
+                PlayerBState = GameState.Fire;
+            }
+        }
+
     }
 }
