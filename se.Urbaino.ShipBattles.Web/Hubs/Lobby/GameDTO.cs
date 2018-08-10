@@ -1,28 +1,29 @@
 using System;
+using se.Urbaino.ShipBattles.Domain.GameItems;
+using se.Urbaino.ShipBattles.Domain.Games;
 
 namespace se.Urbaino.ShipBattles.Web.Hubs.Lobby
 {
     public class GameDTO
     {
-        public string Id { get; set; }
-        public string OpponentName { get; set; }
-        public bool? ResultIsVictory { get; set; }
-
-
-        public override bool Equals(object obj)
+        public GameDTO(Game game, PlayerDTO player)
         {
-            if (obj == null || GetType() != obj.GetType())
-            {
-                return false;
-            }
-
-            var other = (GameDTO)obj;
-            return Id.Equals(other.Id);
+            GameId = game.Id;
+            Me = player;
+            
+            bool isPlayerA = game.PlayerA == player.Id;
+            Opponent = isPlayerA ? game.PlayerB : game.PlayerA;
+            Board = isPlayerA ? game.BoardA : game.BoardB;
+            EnemyBoard = isPlayerA ? game.BoardB : game.BoardA;
+            GameState = isPlayerA ? game.PlayerAState : game.PlayerBState;
         }
 
-        public override int GetHashCode()
-        {
-            return Id.GetHashCode();
-        }
+        public string GameId { get; set; }
+        public PlayerDTO Me { get; set; }
+        public string Opponent { get; set; }
+        public Board Board { get; set; }
+        public Board EnemyBoard { get; set; }
+        public GameState GameState { get; set; }
+
     }
 }

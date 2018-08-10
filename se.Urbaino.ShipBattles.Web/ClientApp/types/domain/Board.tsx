@@ -1,4 +1,4 @@
-import Ship from "./Ship";
+import Ship, { Direction } from "./Ship";
 import Shot from "./Shot";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
@@ -16,12 +16,34 @@ export default function Board(props: any) {
     var board: BoardState = props.board;
 
     let items: CellState[][] = [];
-    board.shots.forEach(ship => { // TODO: Hantera dictionary istället
-        items[ship.Coordinates.X][ship.Coordinates.Y] = CellState.Ship;
+    for (let i = 0; i < board.width; i++) {
+        items[i] = [];
+    }
+
+    board.ships.forEach((ship: Ship) => { // NOTE: Dictionary would be nice
+        var x = ship.origin.x;
+        var y = ship.origin.y;
+        for (let length = 0; length < ship.length; length++) {
+            items[x][y] = CellState.Ship;
+            switch (ship.heading) {
+                case Direction.North:
+                    y -= 1;
+                    break;
+                case Direction.East:
+                    x += 1;
+                    break;
+                case Direction.West:
+                    x -= 1;
+                    break;
+                case Direction.South:
+                    y += 1;
+                    break;
+            }
+        }
     });
 
-    board.shots.forEach(shot => { // TODO: Hantera dictionary istället
-        var cell = items[shot.Coordinates.X][shot.Coordinates.Y];
+    board.shots.forEach((shot: Shot) => { // TODO: Dictionary would be nice
+        var cell = items[shot.coordinates.x][shot.coordinates.y];
         var value: CellState;
         if (cell === undefined) {
             value = CellState.Shot;
@@ -29,35 +51,35 @@ export default function Board(props: any) {
         else {
             value = CellState.ShotShip;
         }
-        items[shot.Coordinates.X][shot.Coordinates.Y] = value;
+        items[shot.coordinates.x][shot.coordinates.y] = value;
     });
 
 
     let rows = [];
-    for (let i = 0; i < board.height; i++) {
+    for (let y = 0; y < board.height; y++) {
         let cols = [];
-        for (let j = 0; j < board.width; j++) {
-            let icon: string = '';
-            switch (items[i][j]) {
+        for (let x = 0; x < board.width; x++) {
+            let state: string = '';
+            switch (items[x][y]) {
                 case CellState.Ship:
-                    icon = 'S';
+                    state = 'ship';
                     break;
                 case CellState.Shot:
-                    icon = 'x';
+                    state = 'shot';
                     break;
                 case CellState.ShotShip:
-                    icon = 'X';
+                    state = 'shotShip';
                     break;
                 default:
                     break;
             }
-            cols.push(<td>{icon}</td>);
+            cols.push(<td key={x} className={`boardColumn ${state}`} onClick={() => props.clickCallback(x, y)}></td>);
         }
-        rows.push(<tr>{cols}</tr>);
+        rows.push(<tr key={y} className="boardRow">{cols}</tr>);
     }
 
     return (
-        <table>
+        <table className="boardTable">
             <tbody>
                 {rows}
             </tbody>

@@ -1,6 +1,7 @@
 import { BoardState } from "./Board";
+import { GameState } from "./GameState";
 
-export default interface GameSummary {
+export default interface Game {
     id: string,
     playerA: string,
     playerb: string,
@@ -9,20 +10,3 @@ export default interface GameSummary {
     state: GameState
 }
 
-enum GameState {
-    PlayerAPlaceShip4,
-    PlayerAPlaceShip3,
-    PlayerAPlaceShip2,
-    PlayerAPlaceShip1,
-
-    PlayerBPlaceShip4,
-    PlayerBPlaceShip3,
-    PlayerBPlaceShip2,
-    PlayerBPlaceShip1,
-
-    PlayerAFire,
-    PlayerBFire,
-
-    PlayerAWin,
-    PlayerBWin
-}

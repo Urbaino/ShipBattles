@@ -25,29 +25,50 @@ namespace se.Urbaino.ShipBattles.Web.Hubs
 
         public async Task GetGameInfo(string gameId)
         {
-            await Groups.AddToGroupAsync(gameId, Context.UserIdentifier);
+            await Groups.AddToGroupAsync(Context.ConnectionId, GetCurrentPlayer.Id);
             var game = GameManager.GetGame(gameId, GetCurrentPlayer.Id);
 
-            // Testing
-            game = GameManager.PlaceShip(game.Id, GetCurrentPlayer.Id, new Ship(new Coordinate(1, 0), 4, Direction.East));
-
-            await Clients.Caller.SendAsync("Initialize", game, GetCurrentPlayer);
+            await Clients.Caller.SendAsync("GameUpdate", new GameDTO(game, GetCurrentPlayer));
         }
 
         public async Task PlaceShip(string gameId, Ship ship)
         {
-            // TODO: Exception handling
-            var game = GameManager.PlaceShip(gameId, GetCurrentPlayer.Id, ship);
+            Game game;
+            try
+            {
+                game = GameManager.PlaceShip(gameId, GetCurrentPlayer.Id, ship);
+            }
+            catch (ShipBattlesException ex)
+            {
+                await Clients.Caller.SendAsync("Message", ex.Message);
+                return;
+            }
 
-            await Clients.Group(gameId).SendAsync("GameUpdate", game);
+            await Clients.Caller.SendAsync("GameUpdate", new GameDTO(game, GetCurrentPlayer));
+            var opponent = GetCurrentPlayer.Id == game.PlayerA ?
+                new PlayerDTO { Id = game.PlayerB, Name = game.PlayerB } :
+                new PlayerDTO { Id = game.PlayerA, Name = game.PlayerA };
+            await Clients.Group(opponent.Id).SendAsync("GameUpdate", new GameDTO(game, opponent));
         }
 
         public async Task Fire(string gameId, Shot shot)
         {
-            // TODO: Exception handling
-            var game = GameManager.Fire(gameId, GetCurrentPlayer.Id, shot);
+            Game game;
+            try
+            {
+                game = GameManager.Fire(gameId, GetCurrentPlayer.Id, shot);
+            }
+            catch (ShipBattlesException ex)
+            {
+                await Clients.Caller.SendAsync("Message", ex.Message);
+                return;
+            }
 
-            await Clients.Group(gameId).SendAsync("GameUpdate", game);
+            await Clients.Caller.SendAsync("GameUpdate", new GameDTO(game, GetCurrentPlayer));
+            var opponent = GetCurrentPlayer.Id == game.PlayerA ?
+                new PlayerDTO { Id = game.PlayerB, Name = game.PlayerB } :
+                new PlayerDTO { Id = game.PlayerA, Name = game.PlayerA };
+            await Clients.Group(opponent.Id).SendAsync("GameUpdate", new GameDTO(game, opponent));
         }
 
     }

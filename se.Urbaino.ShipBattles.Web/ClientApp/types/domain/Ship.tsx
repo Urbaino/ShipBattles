@@ -1,7 +1,14 @@
 import Coordinate from "./Coordinate";
 
-export default interface Board {
-    Coordinates : Coordinate,
-    Length : number,
-    Heading : string
+export default interface Ship {
+    origin : Coordinate,
+    length : number,
+    heading : Direction
+}
+
+export enum Direction{
+    North,
+    East,
+    West,
+    South
 }

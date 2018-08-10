@@ -49,7 +49,7 @@ namespace se.Urbaino.ShipBattles.Domain.GameItems
             foreach (var coord in ship.GetCoordinates())
             {
                 if (map.TryGetValue(coord, out var existingShip)) throw new ShipBattlesException($"Ship: {ship} cannot intersect existing ship: {existingShip}");
-                if (coord.X >= Height || coord.Y >= Height) throw new ShipBattlesException($"Ship outside board: {coord}");
+                if (coord.X >= Width || coord.Y >= Height) throw new ShipBattlesException($"Ship outside board: {coord}");
             }
 
             // Update ship list

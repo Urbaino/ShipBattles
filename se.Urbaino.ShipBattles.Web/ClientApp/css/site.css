@@ -63,4 +63,29 @@
         overflow: hidden;
         text-overflow: ellipsis;
     }
+
+    .boardTable {
+
+    }
+    .boardRow{
+        
+    }
+    .boardColumn{
+        height: 25px;
+        width: 25px;
+        border-style: solid;
+    }
+    .ship{
+        background: black;
+    }
+    .shot{
+        background: gray;
+    }
+    .shipShot{
+        background: crimson;
+    }
+    .dirChange{
+        height: 100%;
+        width: 100%;
+    }
 }

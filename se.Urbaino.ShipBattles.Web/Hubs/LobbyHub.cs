@@ -36,7 +36,7 @@ namespace se.Urbaino.ShipBattles.Web.Hubs
             await Clients.Others.SendAsync("NewPlayer", player);
 
             var dbGames = GameManager.GetGames(player.Id);
-            var games = dbGames.Select(g => new GameDTO
+            var games = dbGames.Select(g => new GameSummaryDTO
             {
                 Id = g.Id,
                 OpponentName = (player.Id == g.PlayerA ? g.PlayerB : g.PlayerA),

@@ -112,8 +112,7 @@ export class Lobby extends React.Component<RouteComponentProps<{}>, LobbyState> 
                 return <button key={i} onClick={() => this.redirectToGame(game.id)}>{game.opponentName}</button>
             })}
 
-            <h3>State:</h3>
-            <div>{JSON.stringify(this.state)}</div>
+            <h2>History:</h2>
 
         </div>;
     }
