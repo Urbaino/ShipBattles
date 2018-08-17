@@ -34,6 +34,10 @@ namespace se.Urbaino.ShipBattles.Domain.GameItems
             Shots = shots;
         }
 
+        public Board WithoutShips(){
+            return new Board(Height, Width, new List<Ship>(), Shots);
+        }
+
         public void Fire(Shot shot)
         {
             if (ShotMap().TryGetValue(shot.Coordinates, out _)) throw new ShipBattlesException($"Shot already taken: {shot}");

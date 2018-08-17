@@ -19,6 +19,8 @@ namespace se.Urbaino.ShipBattles.Domain.Games
         public GameState PlayerAState { get; private set; }
         public GameState PlayerBState { get; private set; }
 
+        public bool IsEnded => PlayerAState == GameState.Win || PlayerBState == GameState.Win;
+
         private Game(string playerA, string playerB)
         {
             Id = Guid.NewGuid().ToString();

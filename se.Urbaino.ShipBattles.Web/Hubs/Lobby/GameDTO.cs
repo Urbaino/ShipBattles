@@ -10,11 +10,13 @@ namespace se.Urbaino.ShipBattles.Web.Hubs.Lobby
         {
             GameId = game.Id;
             Me = player;
-            
+
             bool isPlayerA = game.PlayerA == player.Id;
             Opponent = isPlayerA ? game.PlayerB : game.PlayerA;
             Board = isPlayerA ? game.BoardA : game.BoardB;
-            EnemyBoard = isPlayerA ? game.BoardB : game.BoardA;
+            EnemyBoard = game.IsEnded ?
+                (isPlayerA ? game.BoardB : game.BoardA) :
+                (isPlayerA ? game.BoardB.WithoutShips() : game.BoardA.WithoutShips());
             GameState = isPlayerA ? game.PlayerAState : game.PlayerBState;
         }
 

@@ -64,11 +64,17 @@
         text-overflow: ellipsis;
     }
 
-    .boardTable {
-
+    .board p {
+        text-align: center;
     }
-    .boardRow{
-        
+    .info{
+        min-height: 200px;
+    }
+    .playerBoard{
+        float: left;
+    }
+    .opponentBoard{
+        float: right;
     }
     .boardColumn{
         height: 25px;
@@ -81,7 +87,7 @@
     .shot{
         background: gray;
     }
-    .shipShot{
+    .shotShip{
         background: crimson;
     }
     .dirChange{

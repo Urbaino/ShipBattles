@@ -98,13 +98,20 @@ export class Play extends React.Component<RouteComponentProps<{}>, PlayState> {
 
             {this.renderHeader()}
 
-            {this.renderInstruction()}
-
-            <p>Your board:</p>
-            <Board board={this.state.board} clickCallback={this.placeShip} />
-            <p>{this.state.opponent}'s board:</p>
-            <Board board={this.state.enemyBoard} clickCallback={this.fire} />
-
+            <div className="info">
+                {this.renderInstruction()}
+            </div>
+            
+            <div className="boards">
+                <span className="playerBoard board">
+                    <p>Your board:</p>
+                    <Board board={this.state.board} clickCallback={this.placeShip} />
+                </span>
+                <span className="opponentBoard board">
+                    <p>{this.state.opponent}'s board:</p>
+                    <Board board={this.state.enemyBoard} clickCallback={this.fire} />
+                </span>
+            </div>
         </div>;
     }
 
