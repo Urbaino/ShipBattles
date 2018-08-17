@@ -20,11 +20,12 @@ namespace se.Urbaino.ShipBattles.Domain.GameItems
 
         public IEnumerable<Coordinate> GetCoordinates()
         {
+            yield return Origin;
             var coords = Origin;
-            for (var i = 0; i < Length; ++i)
+            for (var i = 1; i < Length; ++i)
             {
-                yield return coords;
                 coords = coords.GetNeighboringCoordinates(Heading);
+                yield return coords;
             }
         }
 

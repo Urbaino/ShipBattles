@@ -59,9 +59,9 @@ namespace se.Urbaino.ShipBattles.Domain.Games
             IsGameReadyToStart();
         }
 
-        public void PlayerATakeShot(Shot shot)
+        public void PlayerATakeShot(Coordinate coordinates)
         {
-            PlayerAState = TakeShot(shot, PlayerAState, BoardB);
+            PlayerAState = TakeShot(coordinates, PlayerAState, BoardB);
             PlayerBState = PlayerAState == GameState.Win ? GameState.Lose : GameState.Fire;
         }
 
@@ -71,9 +71,9 @@ namespace se.Urbaino.ShipBattles.Domain.Games
             IsGameReadyToStart();
         }
 
-        public void PlayerBTakeShot(Shot shot)
+        public void PlayerBTakeShot(Coordinate coordinates)
         {
-            PlayerBState = TakeShot(shot, PlayerBState, BoardA);
+            PlayerBState = TakeShot(coordinates, PlayerBState, BoardA);
             PlayerAState = PlayerBState == GameState.Win ? GameState.Lose : GameState.Fire;
         }
 
@@ -116,12 +116,12 @@ namespace se.Urbaino.ShipBattles.Domain.Games
             }
         }
 
-        private static GameState TakeShot(Shot shot, GameState state, Board board)
+        private static GameState TakeShot(Coordinate coordinates, GameState state, Board board)
         {
             switch (state)
             {
                 case GameState.Fire:
-                    board.Fire(shot);
+                    board.Fire(coordinates);
                     return board.AreAllShipsSunk() ? GameState.Win : GameState.NotYourTurn;
 
                 case GameState.PlaceShip1:

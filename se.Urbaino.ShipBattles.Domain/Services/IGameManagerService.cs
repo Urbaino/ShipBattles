@@ -11,7 +11,7 @@ namespace se.Urbaino.ShipBattles.Domain.Services
         Game GetGame(string gameId, string playerId);
         IEnumerable<Game> GetGames(string playerId);
 
-        Game Fire(string gameId, string playerId, Shot shot);
+        Game Fire(string gameId, string playerId, Coordinate coordinates);
         Game PlaceShip(string gameId, string playerId, Ship ship);
     }
 }

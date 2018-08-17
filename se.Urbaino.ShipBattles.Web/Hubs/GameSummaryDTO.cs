@@ -1,9 +1,12 @@
-namespace se.Urbaino.ShipBattles.Web.Hubs.Lobby
+using System;
+
+namespace se.Urbaino.ShipBattles.Web.Hubs
 {
-    public class PlayerDTO
+    public class GameSummaryDTO
     {
         public string Id { get; set; }
-        public string Name { get; set; }
+        public string OpponentName { get; set; }
+        public bool? ResultIsVictory { get; set; }
 
 
         public override bool Equals(object obj)
@@ -12,8 +15,8 @@ namespace se.Urbaino.ShipBattles.Web.Hubs.Lobby
             {
                 return false;
             }
-            
-            var other = (PlayerDTO)obj;
+
+            var other = (GameSummaryDTO)obj;
             return Id.Equals(other.Id);
         }
 

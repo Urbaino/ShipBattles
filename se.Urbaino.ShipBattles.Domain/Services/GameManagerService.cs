@@ -33,14 +33,14 @@ namespace se.Urbaino.ShipBattles.Domain.Services
             return _repository.GetListOfGames(playerId);
         }
 
-        Game IGameManagerService.Fire(string gameId, string playerId, Shot shot)
+        Game IGameManagerService.Fire(string gameId, string playerId, Coordinate coordinates)
         {
             var game = _repository.GetGame(gameId, playerId);
 
             if (playerId == game.PlayerA)
-                game.PlayerATakeShot(shot);
+                game.PlayerATakeShot(coordinates);
             else
-                game.PlayerBTakeShot(shot);
+                game.PlayerBTakeShot(coordinates);
             game.Timestamp = DateTime.Now;
 
             _repository.Update(game);

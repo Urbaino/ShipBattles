@@ -6,7 +6,6 @@ using se.Urbaino.ShipBattles.Domain.Repositories;
 using se.Urbaino.ShipBattles.Domain.Games;
 using se.Urbaino.ShipBattles.Domain.Exceptions;
 using System.Collections.Generic;
-using se.Urbaino.ShipBattles.Web.Hubs.Lobby;
 using se.Urbaino.ShipBattles.Domain.GameItems;
 using se.Urbaino.ShipBattles.Domain.Services;
 
@@ -51,12 +50,12 @@ namespace se.Urbaino.ShipBattles.Web.Hubs
             await Clients.Group(opponent.Id).SendAsync("GameUpdate", new GameDTO(game, opponent));
         }
 
-        public async Task Fire(string gameId, Shot shot)
+        public async Task Fire(string gameId, Coordinate coordinates)
         {
             Game game;
             try
             {
-                game = GameManager.Fire(gameId, GetCurrentPlayer.Id, shot);
+                game = GameManager.Fire(gameId, GetCurrentPlayer.Id, coordinates);
             }
             catch (ShipBattlesException ex)
             {

@@ -1,11 +1,11 @@
 import Ship, { Direction } from "./Ship";
-import Shot from "./Shot";
+import ShotModel from "./Shot";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 
 export interface BoardState {
     ships: Array<Ship>,
-    shots: Array<Shot>,
+    shots: Array<ShotModel>,
     width: number,
     height: number
 }
@@ -42,15 +42,8 @@ export default function Board(props: any) {
         }
     });
 
-    board.shots.forEach((shot: Shot) => { // TODO: Dictionary would be nice
-        var cell = items[shot.coordinates.x][shot.coordinates.y];
-        var value: CellState;
-        if (cell === undefined) {
-            value = CellState.Shot;
-        }
-        else {
-            value = CellState.ShotShip;
-        }
+    board.shots.forEach((shot: ShotModel) => { // TODO: Dictionary would be nice
+        var value: CellState = shot.hit ? CellState.ShotShip : CellState.Shot;
         items[shot.coordinates.x][shot.coordinates.y] = value;
     });
 

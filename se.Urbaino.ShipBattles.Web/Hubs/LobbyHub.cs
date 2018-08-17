@@ -6,7 +6,6 @@ using se.Urbaino.ShipBattles.Domain.Repositories;
 using se.Urbaino.ShipBattles.Domain.Games;
 using se.Urbaino.ShipBattles.Domain.Exceptions;
 using System.Collections.Generic;
-using se.Urbaino.ShipBattles.Web.Hubs.Lobby;
 using System.Linq;
 using se.Urbaino.ShipBattles.Domain.Services;
 

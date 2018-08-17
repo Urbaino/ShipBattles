@@ -6,10 +6,11 @@ namespace se.Urbaino.ShipBattles.Data.DBO
     {
         public int CoordinateX { get; set; }
         public int CoordinateY { get; set; }
+        public bool Hit {get;set;}
 
         public Shot ToDomain()
         {
-            return new Shot(new Coordinate(CoordinateX, CoordinateY));
+            return new Shot(new Coordinate(CoordinateX, CoordinateY), Hit);
         }
 
     }

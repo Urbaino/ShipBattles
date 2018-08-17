@@ -34,16 +34,18 @@ namespace se.Urbaino.ShipBattles.Domain.GameItems
             Shots = shots;
         }
 
-        public Board WithoutShips(){
+        public Board WithoutShips()
+        {
             return new Board(Height, Width, new List<Ship>(), Shots);
         }
 
-        public void Fire(Shot shot)
+        public void Fire(Coordinate coordinates)
         {
-            if (ShotMap().TryGetValue(shot.Coordinates, out _)) throw new ShipBattlesException($"Shot already taken: {shot}");
-            if (shot.Coordinates.X >= Height || shot.Coordinates.Y >= Height) throw new ShipBattlesException($"Shot outside board: {shot.Coordinates}");
+            if (ShotMap().TryGetValue(coordinates, out _)) throw new ShipBattlesException($"Shot already taken: {coordinates}");
+            if (coordinates.X >= Height || coordinates.Y >= Height) throw new ShipBattlesException($"Shot outside board: {coordinates}");
 
-            Shots.Add(shot);
+            var hit = ShipMap().TryGetValue(coordinates, out _);
+            Shots.Add(new Shot(coordinates, hit));
         }
 
         public void PlaceShip(Ship ship)

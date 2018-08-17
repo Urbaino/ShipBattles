@@ -2,11 +2,11 @@ using System;
 using se.Urbaino.ShipBattles.Domain.GameItems;
 using se.Urbaino.ShipBattles.Domain.Games;
 
-namespace se.Urbaino.ShipBattles.Web.Hubs.Lobby
+namespace se.Urbaino.ShipBattles.Web.Hubs
 {
     public class GameDTO
     {
-        public GameDTO(Game game, PlayerDTO player)
+        public GameDTO(Domain.Games.Game game, PlayerDTO player)
         {
             GameId = game.Id;
             Me = player;

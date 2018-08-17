@@ -7,7 +7,7 @@ import { GameState } from '../types/domain/GameState';
 import Game from '../types/domain/Game';
 import Ship, { Direction } from '../types/domain/Ship';
 import Coordinate from '../types/domain/Coordinate';
-import Shot from '../types/domain/Shot';
+import ShotModel from '../types/domain/Shot';
 
 interface PlayState {
     hub: HubConnection,
@@ -84,7 +84,7 @@ export class Play extends React.Component<RouteComponentProps<{}>, PlayState> {
     }
 
     fire = (x: number, y: number) => {
-        let shot: Shot = { coordinates: { x: x, y: y } };
+        let shot: Coordinate = { x: x, y: y };
         this.state.hub.invoke('Fire', this.state.gameId, shot);
     }
 
@@ -101,7 +101,7 @@ export class Play extends React.Component<RouteComponentProps<{}>, PlayState> {
             <div className="info">
                 {this.renderInstruction()}
             </div>
-            
+
             <div className="boards">
                 <span className="playerBoard board">
                     <p>Your board:</p>
