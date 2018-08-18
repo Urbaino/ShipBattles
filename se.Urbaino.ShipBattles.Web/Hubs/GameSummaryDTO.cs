@@ -6,6 +6,7 @@ namespace se.Urbaino.ShipBattles.Web.Hubs
     {
         public string Id { get; set; }
         public string OpponentName { get; set; }
+        public DateTime Timestamp { get; set; }
         public bool? ResultIsVictory { get; set; }
 
 

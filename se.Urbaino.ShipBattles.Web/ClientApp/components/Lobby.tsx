@@ -83,20 +83,24 @@ export class Lobby extends React.Component<RouteComponentProps<{}>, LobbyState> 
     }
 
     redirectToGame = (gameId: string) => {
-        window.location.href = `play/${gameId}`;        
+        window.location.href = `play/${gameId}`;
     }
 
     public render() {
         return <div>
             <h1>Welcome {this.state.Me.name}</h1>
 
-            {this.state.Challenge && this.state.Challenge.playerA && <div>
+            {this.state.Challenge && this.state.Challenge.playerA && <div className="modal">
                 <p>You've been challenged by {this.state.Challenge.playerA}!</p>
                 <span>
                     <button onClick={this.acceptChallenge}>Accept</button>
                     <button onClick={this.declineChallenge}>Decline</button>
                 </span>
             </div>}
+
+            {/* <div className="modal">
+
+            </div> */}
 
             {this.state.Challenge && !this.state.Challenge.playerA && <div>
                 Waiting for challenge reply from {this.state.Challenge.playerB}...
@@ -108,11 +112,14 @@ export class Lobby extends React.Component<RouteComponentProps<{}>, LobbyState> 
             })}
 
             <h2>Games in progress:</h2>
-            {this.state.Games.map((game, i) => {
-                return <button key={i} onClick={() => this.redirectToGame(game.id)}>{game.opponentName}</button>
+            {this.state.Games.filter(game => game.resultIsVictory == undefined).map((game, i) => {
+                return <button key={i} onClick={() => this.redirectToGame(game.id)}>{game.opponentName} - {game.timestamp.toString()}</button>
             })}
 
             <h2>History:</h2>
+            {this.state.Games.filter(game => game.resultIsVictory != undefined).map((game, i) => {
+                return <button key={i} onClick={() => this.redirectToGame(game.id)}>{game.opponentName}</button>
+            })}
 
         </div>;
     }

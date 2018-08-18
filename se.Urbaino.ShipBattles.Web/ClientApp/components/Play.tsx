@@ -17,7 +17,8 @@ interface PlayState {
     board: BoardState,
     enemyBoard: BoardState,
     opponent: string,
-    shipToPlace: Ship
+    shipToPlace: Ship,
+    message?: string
 }
 
 export class Play extends React.Component<RouteComponentProps<{}>, PlayState> {
@@ -40,16 +41,16 @@ export class Play extends React.Component<RouteComponentProps<{}>, PlayState> {
                 var newShipToPlace: Ship;
                 switch (game.gameState) {
                     case GameState.PlaceShip4:
-                        newShipToPlace = { origin: { x: 0, y: 0 }, length: 4, heading: Direction.North };
+                        newShipToPlace = { origin: { x: 0, y: 0 }, length: 4, heading: prevState.shipToPlace.heading };
                         break;
                     case GameState.PlaceShip3:
-                        newShipToPlace = { origin: { x: 0, y: 0 }, length: 3, heading: Direction.North };
+                        newShipToPlace = { origin: { x: 0, y: 0 }, length: 3, heading: prevState.shipToPlace.heading };
                         break;
                     case GameState.PlaceShip2:
-                        newShipToPlace = { origin: { x: 0, y: 0 }, length: 2, heading: Direction.North };
+                        newShipToPlace = { origin: { x: 0, y: 0 }, length: 2, heading: prevState.shipToPlace.heading };
                         break;
                     case GameState.PlaceShip1:
-                        newShipToPlace = { origin: { x: 0, y: 0 }, length: 1, heading: Direction.North };
+                        newShipToPlace = { origin: { x: 0, y: 0 }, length: 1, heading: prevState.shipToPlace.heading };
                         break;
                     default:
                         newShipToPlace = prevState.shipToPlace;
@@ -70,6 +71,12 @@ export class Play extends React.Component<RouteComponentProps<{}>, PlayState> {
         this.state.hub.on('GameUpdate', (game: PlayState) => {
             setStateFromPlayState(game);
         });
+
+        this.state.hub.on('Message', (msg: string) => {
+            this.setState((prevstate) => {
+                return { message: msg };
+            });
+        });
     }
 
     componentDidMount() {
@@ -85,11 +92,13 @@ export class Play extends React.Component<RouteComponentProps<{}>, PlayState> {
 
     fire = (x: number, y: number) => {
         let shot: Coordinate = { x: x, y: y };
+        this.setState((prevstate) => { return { message: undefined }; });
         this.state.hub.invoke('Fire', this.state.gameId, shot);
     }
 
     placeShip = (x: number, y: number) => {
         let ship: Ship = { origin: { x: x, y: y }, length: this.state.shipToPlace.length, heading: this.state.shipToPlace.heading };
+        this.setState((prevstate) => { return { message: undefined }; });
         this.state.hub.invoke('PlaceShip', this.state.gameId, ship);
     }
 
@@ -97,6 +106,12 @@ export class Play extends React.Component<RouteComponentProps<{}>, PlayState> {
         return <div>
 
             {this.renderHeader()}
+            
+            <div className="errorMessage">
+                {this.state.message && <span>
+                    {this.state.message}
+                </span>}
+            </div>
 
             <div className="info">
                 {this.renderInstruction()}
@@ -112,6 +127,7 @@ export class Play extends React.Component<RouteComponentProps<{}>, PlayState> {
                     <Board board={this.state.enemyBoard} clickCallback={this.fire} />
                 </span>
             </div>
+
         </div>;
     }
 

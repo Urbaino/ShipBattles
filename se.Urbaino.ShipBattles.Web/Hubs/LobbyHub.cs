@@ -39,6 +39,7 @@ namespace se.Urbaino.ShipBattles.Web.Hubs
             {
                 Id = g.Id,
                 OpponentName = (player.Id == g.PlayerA ? g.PlayerB : g.PlayerA),
+                Timestamp = g.Timestamp,
                 ResultIsVictory = (g.PlayerAState == GameState.Win || g.PlayerBState == GameState.Win) ?
                      (player.Id == g.PlayerA ? g.PlayerAState == GameState.Win : g.PlayerBState == GameState.Win) :
                      (bool?)null
