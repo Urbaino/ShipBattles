@@ -16,7 +16,7 @@ namespace se.Urbaino.ShipBattles.Web.Hubs
             Board = isPlayerA ? game.BoardA : game.BoardB;
             EnemyBoard = game.IsEnded ?
                 (isPlayerA ? game.BoardB : game.BoardA) :
-                (isPlayerA ? game.BoardB.WithoutShips() : game.BoardA.WithoutShips());
+                (isPlayerA ? game.BoardB.OnlySunkShips() : game.BoardA.OnlySunkShips());
             GameState = isPlayerA ? game.PlayerAState : game.PlayerBState;
         }
 

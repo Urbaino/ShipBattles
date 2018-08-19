@@ -14,10 +14,6 @@ namespace se.Urbaino.ShipBattles.Domain.GameItems
         public int Height { get; private set; }
         public int Width { get; private set; }
 
-        // Public properties
-        // public IEnumerable<Ship> Ships => ShipList;
-        // public IEnumerable<Shot> Shots => ShotList;
-
         public Board(int height, int width) : this(height, width, new List<Ship>(), new List<Shot>())
         {
         }
@@ -34,9 +30,9 @@ namespace se.Urbaino.ShipBattles.Domain.GameItems
             Shots = shots;
         }
 
-        public Board WithoutShips()
+        public Board OnlySunkShips()
         {
-            return new Board(Height, Width, new List<Ship>(), Shots);
+            return new Board(Height, Width, Ships.Where(IsShipSunk).ToList(), Shots);
         }
 
         public void Fire(Coordinate coordinates)
@@ -62,16 +58,21 @@ namespace se.Urbaino.ShipBattles.Domain.GameItems
             Ships.Add(ship);
         }
 
-        public bool AreAllShipsSunk()
+        public bool IsShipSunk(Ship ship)
         {
             var map = ShotMap();
-            foreach (var shipPart in ShipMap())
+            foreach (var shipPart in ship.GetCoordinates())
             {
-                // If there is no shot at this ship part, the game has not ended
-                if (!map.TryGetValue(shipPart.Key, out _)) return false;
-                // NOTE: Keep list of intact ship parts?
+                // If there is no shot at this ship part, the ship is not sunk.
+                if (!map.TryGetValue(shipPart, out _)) return false;
             }
             return true;
+        }
+
+        public bool AreAllShipsSunk()
+        {
+            // If any ship is not sunk, the game has not ended. 
+            return Ships.All(IsShipSunk);
         }
 
 
