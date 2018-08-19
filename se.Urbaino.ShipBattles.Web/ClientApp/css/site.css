@@ -108,13 +108,12 @@
         width: 255px;
     }
     .boardCell{
-        height: 25px;
-        width: 25px;
         stroke:black;
         stroke-width: 2px;
         fill:white;
     }
-    .ship{
+    .ship{ 
+        /* Ska på sikt bli typ ellips eller nåt */
         fill: black;
     }
     .shot{
