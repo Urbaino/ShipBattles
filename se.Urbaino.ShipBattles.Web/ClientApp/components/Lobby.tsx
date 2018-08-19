@@ -80,6 +80,7 @@ export class Lobby extends React.Component<RouteComponentProps<{}>, LobbyState> 
     declineChallenge = () => {
         if (this.state.Challenge === undefined) return;
         this.state.Hub.invoke('DeclineChallenge', this.state.Challenge.state);
+        this.setState(() => { return { Challenge: undefined } });
     }
 
     redirectToGame = (gameId: string) => {
@@ -90,17 +91,15 @@ export class Lobby extends React.Component<RouteComponentProps<{}>, LobbyState> 
         return <div>
             <h1>Welcome {this.state.Me.name}</h1>
 
-            {this.state.Challenge && this.state.Challenge.playerA && <div className="modal">
-                <p>You've been challenged by {this.state.Challenge.playerA}!</p>
-                <span>
-                    <button onClick={this.acceptChallenge}>Accept</button>
-                    <button onClick={this.declineChallenge}>Decline</button>
-                </span>
+            {this.state.Challenge && this.state.Challenge.playerA && <div className="modal" onClick={this.declineChallenge}>
+                <div className="modal-content">
+                    <p>You've been challenged by {this.state.Challenge.playerA}!</p>
+                    <span>
+                        <button onClick={this.acceptChallenge}>Accept</button>
+                        <button onClick={this.declineChallenge}>Decline</button>
+                    </span>
+                </div>
             </div>}
-
-            {/* <div className="modal">
-
-            </div> */}
 
             {this.state.Challenge && !this.state.Challenge.playerA && <div>
                 Waiting for challenge reply from {this.state.Challenge.playerB}...

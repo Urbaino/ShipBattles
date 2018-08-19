@@ -22,15 +22,22 @@ export class Home extends React.Component<RouteComponentProps<{}>, HomeState> {
 
     setName = (nick: string) => {
         this.setState(() => {
-            return {Nick: nick};
+            return { Nick: nick };
         });
+    }
+
+    onKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        e.preventDefault();
+        if (e.keyCode === 13) { // Enter
+            this.signIn();
+        }
     }
 
     public render() {
         return <div>
             <h1>Hello!</h1>
             <p>Welcome to Ship Battles! Please enter your username:</p>
-            <input type='text' onChange={(e) => this.setName(e.target.value)} />
+            <input type='text' onChange={(e) => this.setName(e.target.value)} onKeyUp={this.onKeyUp} />
             <button onClick={this.signIn}>Send</button>
             <span>{this.state.Message}</span>
         </div>;
