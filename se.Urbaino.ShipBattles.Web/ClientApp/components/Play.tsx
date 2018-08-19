@@ -17,7 +17,7 @@ interface PlayState {
     board: BoardState,
     enemyBoard: BoardState,
     opponent: string,
-    shipToPlace: Ship,
+    shipToPlace?: Ship,
     message?: string
 }
 
@@ -32,28 +32,29 @@ export class Play extends React.Component<RouteComponentProps<{}>, PlayState> {
             gameState: GameState.NotYourTurn,
             board: { width: 0, height: 0, ships: [], shots: [] },
             enemyBoard: { width: 0, height: 0, ships: [], shots: [] },
-            opponent: '',
-            shipToPlace: { origin: { x: 0, y: 0 }, length: 4, heading: Direction.North }
+            opponent: ''
         };
 
         let setStateFromPlayState = (game: PlayState) => {
             this.setState((prevState) => {
-                var newShipToPlace: Ship;
+                var newShipToPlace: Ship | undefined;
+                var newHeading: Direction = prevState.shipToPlace ? prevState.shipToPlace.heading : Direction.North;
+                var newOrigin: Coordinate = prevState.shipToPlace ? prevState.shipToPlace.origin : { x: 0, y: 0 };
                 switch (game.gameState) {
                     case GameState.PlaceShip4:
-                        newShipToPlace = { origin: { x: 0, y: 0 }, length: 4, heading: prevState.shipToPlace.heading };
+                        newShipToPlace = { origin: newOrigin, length: 4, heading: newHeading };
                         break;
                     case GameState.PlaceShip3:
-                        newShipToPlace = { origin: { x: 0, y: 0 }, length: 3, heading: prevState.shipToPlace.heading };
+                        newShipToPlace = { origin: newOrigin, length: 3, heading: newHeading };
                         break;
                     case GameState.PlaceShip2:
-                        newShipToPlace = { origin: { x: 0, y: 0 }, length: 2, heading: prevState.shipToPlace.heading };
+                        newShipToPlace = { origin: newOrigin, length: 2, heading: newHeading };
                         break;
                     case GameState.PlaceShip1:
-                        newShipToPlace = { origin: { x: 0, y: 0 }, length: 1, heading: prevState.shipToPlace.heading };
+                        newShipToPlace = { origin: newOrigin, length: 1, heading: newHeading };
                         break;
                     default:
-                        newShipToPlace = prevState.shipToPlace;
+                        newShipToPlace = undefined;
                 };
 
                 return {
@@ -63,7 +64,8 @@ export class Play extends React.Component<RouteComponentProps<{}>, PlayState> {
                     board: game.board,
                     enemyBoard: game.enemyBoard,
                     opponent: game.opponent,
-                    shipToPlace: newShipToPlace
+                    shipToPlace: newShipToPlace,
+                    message: undefined
                 }
             });
         }
@@ -97,16 +99,63 @@ export class Play extends React.Component<RouteComponentProps<{}>, PlayState> {
     }
 
     placeShip = (x: number, y: number) => {
+        if (!this.state.shipToPlace) return;
+
         let ship: Ship = { origin: { x: x, y: y }, length: this.state.shipToPlace.length, heading: this.state.shipToPlace.heading };
         this.setState((prevstate) => { return { message: undefined }; });
         this.state.hub.invoke('PlaceShip', this.state.gameId, ship);
+    }
+
+    rotateShip = () => {
+        this.setState((prevState) => {
+            if (!prevState.shipToPlace) return;
+            var newHeading: Direction;
+            switch (prevState.shipToPlace.heading) {
+                case Direction.North:
+                    newHeading = Direction.East;
+                    break;
+                case Direction.East:
+                    newHeading = Direction.South;
+                    break;
+                case Direction.South:
+                    newHeading = Direction.West;
+                    break;
+                case Direction.West:
+                    newHeading = Direction.North;
+                    break;
+                default:
+                    throw "Invalid direction";
+            }
+            return {
+                shipToPlace: {
+                    origin: { x: prevState.shipToPlace.origin.x, y: prevState.shipToPlace.origin.y },
+                    length: prevState.shipToPlace.length,
+                    heading: newHeading
+                }
+            }
+        });
+        return false; // Hide context menu
+    }
+
+    previewShip = (x: number, y: number) => {
+        this.setState((prevState) => {
+            if (!prevState.shipToPlace) return;
+
+            return {
+                shipToPlace: {
+                    origin: { x: x, y: y },
+                    length: prevState.shipToPlace.length,
+                    heading: prevState.shipToPlace.heading
+                }
+            }
+        });
     }
 
     public render() {
         return <div>
 
             {this.renderHeader()}
-            
+
             <div className="errorMessage">
                 {this.state.message && <span>
                     {this.state.message}
@@ -120,7 +169,7 @@ export class Play extends React.Component<RouteComponentProps<{}>, PlayState> {
             <div className="boards">
                 <span className="playerBoard boardHolder">
                     <p>Your board:</p>
-                    <Board board={this.state.board} clickCallback={this.placeShip} />
+                    <Board board={this.state.board} clickCallback={this.placeShip} mouseOverCallback={this.previewShip} shipToPlace={this.state.shipToPlace} rightClickCallback={this.rotateShip} />
                 </span>
                 <span className="opponentBoard boardHolder">
                     <p>{this.state.opponent}'s board:</p>
@@ -148,76 +197,7 @@ export class Play extends React.Component<RouteComponentProps<{}>, PlayState> {
         if (this.state.gameState === GameState.NotYourTurn)
             return <p>Waiting for {this.state.opponent} to fire.</p>;
         else
-            return this.renderShipToPlace();
+            return <p>Please place your ships. Right click to rotate.</p>;
     }
 
-    renderShipToPlace() {
-        switch (this.state.gameState) {
-            case GameState.PlaceShip4:
-            case GameState.PlaceShip3:
-            case GameState.PlaceShip2:
-            case GameState.PlaceShip1:
-                break;
-            default:
-                return false;
-        }
-
-        let length = this.state.shipToPlace.length;
-        let rows = [];
-        for (let i = -length; i <= length; i++) {
-            let cols = [];
-            for (let j = -length; j <= length; j++) {
-                let isShip: boolean = false;
-                switch (this.state.shipToPlace.heading) {
-                    case Direction.North:
-                        isShip = (j == 0 && i <= 0 && i > -length);
-                        break;
-                    case Direction.East:
-                        isShip = (i == 0 && j >= 0 && j < length);
-                        break;
-                    case Direction.West:
-                        isShip = (i == 0 && j <= 0 && j > -length);
-                        break;
-                    case Direction.South:
-                        isShip = (j == 0 && i >= 0 && i < length);
-                        break;
-                }
-
-                let stateSetCallback = (direction: Direction) => {
-                    this.setState((prevState) => {
-                        let newShipToPlace: Ship = {
-                            heading: direction,
-                            origin: prevState.shipToPlace.origin,
-                            length: prevState.shipToPlace.length
-                        };
-                        return { shipToPlace: newShipToPlace };
-                    })
-                };
-                let content;
-                if (j === 0 && i === -length) {
-                    content = <button className='dirChange' onClick={() => stateSetCallback(Direction.North)}></button>;
-                };
-                if (j === 0 && i === length) {
-                    content = <button className='dirChange' onClick={() => stateSetCallback(Direction.South)}></button>;
-                };
-                if (i === 0 && j === -length) {
-                    content = <button className='dirChange' onClick={() => stateSetCallback(Direction.West)}></button>;
-                };
-                if (i === 0 && j === length) {
-                    content = <button className='dirChange' onClick={() => stateSetCallback(Direction.East)}></button>;
-                };
-
-                cols.push(<td key={j} className={`boardColumn ${isShip ? 'ship' : ''}`}>{content}</td>);
-            }
-            rows.push(<tr key={i} className="boardRow">{cols}</tr>);
-        }
-
-        return (
-            <table className="boardTable" >
-                <tbody>
-                    {rows}
-                </tbody>
-            </table>
-        );
-    }
 }

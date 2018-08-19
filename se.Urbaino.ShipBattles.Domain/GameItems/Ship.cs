@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using se.Urbaino.ShipBattles.Domain.Exceptions;
 
 namespace se.Urbaino.ShipBattles.Domain.GameItems
 {
@@ -11,7 +12,7 @@ namespace se.Urbaino.ShipBattles.Domain.GameItems
 
         public Ship(Coordinate origin, int length, Direction heading)
         {
-            if (length < 1) throw new Exception($"Invalid length: {length}. Must be greater than zero.");
+            if (length < 1) throw new ShipBattlesException($"Invalid length: {length}. Must be greater than zero.");
 
             Origin = origin;
             Length = length;

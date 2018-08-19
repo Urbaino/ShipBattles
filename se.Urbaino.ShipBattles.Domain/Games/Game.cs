@@ -102,8 +102,9 @@ namespace se.Urbaino.ShipBattles.Domain.Games
                     return GameState.ReadyToPlay;
 
                 case GameState.Fire:
-                    throw new ShipBattlesIllegalMoveException("Cannot fire at this point");
+                    throw new ShipBattlesIllegalMoveException("Cannot place ship at this point");
 
+                case GameState.ReadyToPlay:
                 case GameState.NotYourTurn:
                     throw new ShipBattlesOutOfTurnException();
 
@@ -128,9 +129,10 @@ namespace se.Urbaino.ShipBattles.Domain.Games
                 case GameState.PlaceShip2:
                 case GameState.PlaceShip3:
                 case GameState.PlaceShip4:
-                    throw new ShipBattlesIllegalMoveException("Cannot place ship at this point");
+                    throw new ShipBattlesIllegalMoveException("Cannot fire at this point");
 
                 case GameState.NotYourTurn:
+                case GameState.ReadyToPlay:
                     throw new ShipBattlesOutOfTurnException();
 
                 case GameState.Win:

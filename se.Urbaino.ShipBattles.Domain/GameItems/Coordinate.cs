@@ -1,4 +1,5 @@
 using System;
+using se.Urbaino.ShipBattles.Domain.Exceptions;
 
 namespace se.Urbaino.ShipBattles.Domain.GameItems
 {
@@ -9,8 +10,8 @@ namespace se.Urbaino.ShipBattles.Domain.GameItems
 
         public Coordinate(int x, int y)
         {
-            if (x < 0) throw new Exception($"Invalid x-coordinate: {x}. Must be greater than or equal to zero.");
-            if (y < 0) throw new Exception($"Invalid y-coordinate: {y}. Must be greater than or equal to zero.");
+            if (x < 0) throw new ShipBattlesException($"Invalid x-coordinate: {x}. Must be greater than or equal to zero.");
+            if (y < 0) throw new ShipBattlesException($"Invalid y-coordinate: {y}. Must be greater than or equal to zero.");
 
             X = x;
             Y = y;
@@ -25,7 +26,7 @@ namespace se.Urbaino.ShipBattles.Domain.GameItems
                 case Direction.West: return new Coordinate(X - 1, Y);
                 case Direction.South: return new Coordinate(X, Y + 1);
                 default:
-                    throw new Exception($"Unhandled direction: {direction}");
+                    throw new ShipBattlesException($"Unhandled direction: {direction}");
             }
         }
 

@@ -94,7 +94,7 @@
         padding-right: 10%;
     }
     .info{
-        min-height: 200px;
+        min-height: 100px;
     }
     .playerBoard{
         float: left;
@@ -110,7 +110,7 @@
     .boardCell{
         stroke:black;
         stroke-width: 2px;
-        fill:white;
+        fill:transparent;
     }
     .ship{ 
         /* Ska på sikt bli typ ellips eller nåt */
