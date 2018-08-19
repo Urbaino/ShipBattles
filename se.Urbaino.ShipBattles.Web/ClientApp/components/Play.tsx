@@ -118,11 +118,11 @@ export class Play extends React.Component<RouteComponentProps<{}>, PlayState> {
             </div>
 
             <div className="boards">
-                <span className="playerBoard board">
+                <span className="playerBoard boardHolder">
                     <p>Your board:</p>
                     <Board board={this.state.board} clickCallback={this.placeShip} />
                 </span>
-                <span className="opponentBoard board">
+                <span className="opponentBoard boardHolder">
                     <p>{this.state.opponent}'s board:</p>
                     <Board board={this.state.enemyBoard} clickCallback={this.fire} />
                 </span>

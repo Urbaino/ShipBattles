@@ -3,6 +3,11 @@ import ShotModel from "./Shot";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 
+interface BoardProps {
+    board : BoardState,
+    clickCallback : Function
+}
+
 export interface BoardState {
     ships: Array<Ship>,
     shots: Array<ShotModel>,
@@ -10,7 +15,7 @@ export interface BoardState {
     height: number
 }
 
-export default function Board(props: any) {
+export default function Board(props: BoardProps) {
     enum CellState { Ship, Shot, ShotShip };
 
     var board: BoardState = props.board;
@@ -42,15 +47,14 @@ export default function Board(props: any) {
         }
     });
 
-    board.shots.forEach((shot: ShotModel) => { // TODO: Dictionary would be nice
+    board.shots.forEach((shot: ShotModel) => {
         var value: CellState = shot.hit ? CellState.ShotShip : CellState.Shot;
         items[shot.coordinates.x][shot.coordinates.y] = value;
     });
 
 
-    let rows = [];
+    let cells = [];
     for (let y = 0; y < board.height; y++) {
-        let cols = [];
         for (let x = 0; x < board.width; x++) {
             let state: string = '';
             switch (items[x][y]) {
@@ -66,16 +70,13 @@ export default function Board(props: any) {
                 default:
                     break;
             }
-            cols.push(<td key={x} className={`boardColumn ${state}`} onClick={() => props.clickCallback(x, y)}></td>);
+            cells.push(<rect key={`${x};${y}`} x={x*25} y={y*25} className={`boardCell ${state}`} onClick={() => props.clickCallback(x, y)}></rect>);
         }
-        rows.push(<tr key={y} className="boardRow">{cols}</tr>);
     }
 
     return (
-        <table className="boardTable">
-            <tbody>
-                {rows}
-            </tbody>
-        </table>
+        <svg className="board">
+            {cells}
+        </svg>
     );
 } 

@@ -86,7 +86,7 @@
         text-align: center;
     }
 
-    .board p {
+    .boardHolder p {
         text-align: center;
     }
     .boards{
@@ -102,19 +102,26 @@
     .opponentBoard{
         float: right;
     }
-    .boardColumn{
+    
+    .board {
+        height: 255px;
+        width: 255px;
+    }
+    .boardCell{
         height: 25px;
         width: 25px;
-        border-style: solid;
+        stroke:black;
+        stroke-width: 2px;
+        fill:white;
     }
     .ship{
-        background: black;
+        fill: black;
     }
     .shot{
-        background: gray;
+        fill: gray;
     }
     .shotShip{
-        background: crimson;
+        fill: crimson;
     }
     .dirChange{
         height: 100%;
