@@ -130,4 +130,7 @@
         color:red;
         min-height: 30px;
     }
+    .gameListItem{
+        display: block;
+    }
 }

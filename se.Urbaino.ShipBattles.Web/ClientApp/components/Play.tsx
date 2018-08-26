@@ -196,6 +196,8 @@ export class Play extends React.Component<RouteComponentProps<{}>, PlayState> {
             return <p>Your turn to fire!</p>;
         if (this.state.gameState === GameState.NotYourTurn)
             return <p>Waiting for {this.state.opponent} to fire.</p>;
+            if (this.state.gameState === GameState.Lose || this.state.gameState === GameState.Win)
+            return <p>Well played!</p>;
         else
             return <p>Please place your ships. Right click to rotate.</p>;
     }

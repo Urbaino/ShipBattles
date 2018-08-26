@@ -112,12 +112,22 @@ export class Lobby extends React.Component<RouteComponentProps<{}>, LobbyState> 
 
             <h2>Games in progress:</h2>
             {this.state.Games.filter(game => game.resultIsVictory == undefined).map((game, i) => {
-                return <button key={i} onClick={() => this.redirectToGame(game.id)}>{game.opponentName} - {game.timestamp.toString()}</button>
+                return <div key={i} className="gameListItem">
+                    <button onClick={() => this.redirectToGame(game.id)}>
+                        {game.opponentName}
+                    </button>
+                    <p>Last move: {new Date(game.timestamp.toString()).toDateString()}</p>
+                </div>
             })}
 
             <h2>History:</h2>
             {this.state.Games.filter(game => game.resultIsVictory != undefined).map((game, i) => {
-                return <button key={i} onClick={() => this.redirectToGame(game.id)}>{game.opponentName}</button>
+                return <div key={i} className="gameListItem">
+                    <button onClick={() => this.redirectToGame(game.id)}>
+                        {game.opponentName}
+                    </button>
+                    <p>Ended: {new Date(game.timestamp.toString()).toDateString()}</p>
+                </div>
             })}
 
         </div>;
